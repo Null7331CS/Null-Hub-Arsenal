@@ -27,6 +27,7 @@ local Window = ArrayField:CreateWindow({
 })
 
 local Combat = Window:CreateTab("Combat")
+
 local CombatMainSection = Combat:CreateSection("Main", true)
 
 local AutoFarmToggle = Combat:CreateToggle({
@@ -66,7 +67,6 @@ local HitboxExpanderButton = Combat:CreateButton({
     },
     Interact = 'Expands Enemy Hitboxes 13x',
     Callback = function()
-        print('Hitbox Expander Button Pressed')
         local function getPlayersName()
             for _, v in pairs(game:GetChildren()) do
                 if v.ClassName == "Players" then
@@ -109,6 +109,7 @@ local HitboxExpanderButton = Combat:CreateButton({
 })
 
 local WeaponMods = Window:CreateTab("Weapon Mods")
+
 local FirepowerModsSection = WeaponMods:CreateSection("Firepower Modifications", true)
 
 local RapidFireToggle = WeaponMods:CreateToggle({
@@ -210,26 +211,24 @@ local InfiniteAmmoToggle = WeaponMods:CreateToggle({
     CurrentValue = false,
     Flag = "InfiniteAmmoToggle",
     Callback = function(enabled)
-        if enabled then
-            _G.infiniteAmmo = true
-            spawn(function()
-                while _G.infiniteAmmo do
-                    if player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("GUI") and player.PlayerGui.GUI:FindFirstChild("Client") and player.PlayerGui.GUI.Client:FindFirstChild("Variables") then
-                        local variables = player.PlayerGui.GUI.Client.Variables
+        local variables = player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("GUI") and player.PlayerGui.GUI:FindFirstChild("Client") and player.PlayerGui.GUI.Client:FindFirstChild("Variables")
+
+        if variables then
+            if enabled then
+                _G.infiniteAmmo = true
+                spawn(function()
+                    while _G.infiniteAmmo do
                         if variables:FindFirstChild("ammocount") then
                             variables.ammocount.Value = 999
                         end
                         if variables:FindFirstChild("ammocount2") then
                             variables.ammocount2.Value = 999
                         end
+                        wait(1)
                     end
-                    wait(1)
-                end
-            end)
-        else
-            _G.infiniteAmmo = false
-            if player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("GUI") and player.PlayerGui.GUI:FindFirstChild("Client") and player.PlayerGui.GUI.Client:FindFirstChild("Variables") then
-                local variables = player.PlayerGui.GUI.Client.Variables
+                end)
+            else
+                _G.infiniteAmmo = false
                 if variables:FindFirstChild("ammocount") then
                     variables.ammocount.Value = 0
                 end
@@ -238,5 +237,21 @@ local InfiniteAmmoToggle = WeaponMods:CreateToggle({
                 end
             end
         end
+    end,
+})
+
+local Misc = Window:CreateTab("Misc")
+
+local MiscSection = Misc:CreateSection("Main", true)
+
+local RedeemAllCodesButton = Misc:CreateButton({
+    Name = "Redeem All Codes",
+    Info = {
+        Title = 'Redeem All Codes',
+        Description = 'Claim all the codes in the game',
+    },
+    Interact = 'Claim all the codes in the game',
+    Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/qwerty-lol/redeem-all-codes/main/redeem%20every%20code%20script.lua'))()
     end,
 })
