@@ -40,13 +40,20 @@ local AutoFarmToggle = Combat:CreateToggle({
         if Value then
             local camera = workspace.CurrentCamera
             local lplr = game:GetService("Players").LocalPlayer
-            _G.autofarm = true
 
             spawn(function()
                 while _G.autofarm do
                     wait()
                     for i, v in pairs(game:GetService("Players"):GetChildren()) do
-                        if v.Character and v.Character:FindFirstChild("Humanoid") and v ~= lplr and v.TeamColor ~= lplr.TeamColor then
+                        if
+                            v.Character and
+                            v.Character:FindFirstChild("Humanoid") and
+                            v ~= lplr and 
+                            v:FindFirstChild("NRPBS") and
+                            v.NRPBS:FindFirstChild("Health") and
+                            v.NRPBS.Health.Value > 0 and
+                            v.TeamColor ~= lplr.TeamColor 
+                        then
                             game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame
                             camera.CFrame = CFrame.new(camera.CFrame.Position, v.Character["Head"].Position) 
                         end
@@ -68,7 +75,7 @@ local HitboxExpanderButton = Combat:CreateButton({
     Interact = 'Expands Enemy Hitboxes 13x',
     Callback = function()
         local function getPlayersName()
-            for _, v in pairs(game:GetChildren()) do
+            for i, v in pairs(game:GetChildren()) do
                 if v.ClassName == "Players" then
                     return v.Name
                 end
