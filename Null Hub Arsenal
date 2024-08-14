@@ -1,0 +1,242 @@
+local player = game:GetService("Players").LocalPlayer
+local playerName = player.Name
+local displayName = player.DisplayName
+
+local gameId = game.PlaceId
+
+if gameId ~= 286090429 then
+    return
+end
+
+local ArrayField = loadstring(game:HttpGet("https://raw.githubusercontent.com/Hosvile/Refinement/main/MC%3AArrayfield%20Library"))()
+
+local Window = ArrayField:CreateWindow({
+    Name = "Null Hub | Arsenal 🔫",
+    LoadingTitle = "Welcome to Null Hub | Arsenal 🔫!  " .. displayName .. " @" .. playerName,
+    LoadingSubtitle = "Loading...",
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = nil,
+        FileName = "ArrayField"
+    },
+    Discord = {
+        Enabled = false,
+        Invite = "sirius",
+        RememberJoins = true
+    },
+})
+
+local Combat = Window:CreateTab("Combat")
+local CombatMainSection = Combat:CreateSection("Main", true)
+
+local AutoFarmToggle = Combat:CreateToggle({
+    Name = "AutoFarm",
+    CurrentValue = false,
+    Flag = "AutoFarmToggle",
+    Callback = function(Value)
+        _G.autofarm = Value
+
+        if Value then
+            local camera = workspace.CurrentCamera
+            local lplr = game:GetService("Players").LocalPlayer
+            _G.autofarm = true
+
+            spawn(function()
+                while _G.autofarm do
+                    wait()
+                    for i, v in pairs(game:GetService("Players"):GetChildren()) do
+                        if v.Character and v.Character:FindFirstChild("Humanoid") and v ~= lplr and v.TeamColor ~= lplr.TeamColor then
+                            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame
+                            camera.CFrame = CFrame.new(camera.CFrame.Position, v.Character["Head"].Position) 
+                        end
+                    end
+                end
+            end)
+        else
+            _G.autofarm = false
+        end
+    end,
+})
+
+local HitboxExpanderButton = Combat:CreateButton({
+    Name = "Hitbox Expander",
+    Info = {
+        Title = 'Hitbox Expansion',
+        Description = 'Expands the enemy\'s hitbox by 13 times.',
+    },
+    Interact = 'Expands Enemy Hitboxes 13x',
+    Callback = function()
+        print('Hitbox Expander Button Pressed')
+        local function getPlayersName()
+            for _, v in pairs(game:GetChildren()) do
+                if v.ClassName == "Players" then
+                    return v.Name
+                end
+            end
+        end
+        local players = getPlayersName()
+        local plr = game[players].LocalPlayer
+        coroutine.resume(coroutine.create(function()
+            while wait(1) do
+                for _, v in pairs(game[players]:GetPlayers()) do
+                    if v.Name ~= plr.Name and v.Character then
+                        local character = v.Character
+                        if character:FindFirstChild("RightUpperLeg") then
+                            character.RightUpperLeg.CanCollide = false
+                            character.RightUpperLeg.Transparency = 0.5
+                            character.RightUpperLeg.Size = Vector3.new(13, 13, 13)
+                        end
+                        if character:FindFirstChild("LeftUpperLeg") then
+                            character.LeftUpperLeg.CanCollide = false
+                            character.LeftUpperLeg.Transparency = 0.5
+                            character.LeftUpperLeg.Size = Vector3.new(13, 13, 13)
+                        end
+                        if character:FindFirstChild("Head") then
+                            character.Head.CanCollide = false
+                            character.Head.Transparency = 0.5
+                            character.Head.Size = Vector3.new(13, 13, 13)
+                        end
+                        if character:FindFirstChild("HumanoidRootPart") then
+                            character.HumanoidRootPart.CanCollide = false
+                            character.HumanoidRootPart.Transparency = 0.5
+                            character.HumanoidRootPart.Size = Vector3.new(13, 13, 13)
+                        end
+                    end
+                end
+            end
+        end))
+    end,
+})
+
+local WeaponMods = Window:CreateTab("Weapon Mods")
+local FirepowerModsSection = WeaponMods:CreateSection("Firepower Modifications", true)
+
+local RapidFireToggle = WeaponMods:CreateToggle({
+    Name = "Rapid Fire",
+    CurrentValue = false,
+    Flag = "RapidFireToggle",
+    Callback = function(state)
+        for _, v in pairs(game.ReplicatedStorage.Weapons:GetDescendants()) do
+            if v.Name == "FireRate" or v.Name == "BFireRate" then
+                if state then
+                    v.Value = 0.02
+                else
+                    v.Value = 0.8
+                end
+            end
+        end
+    end,
+})
+
+local AlwaysAutoToggle = WeaponMods:CreateToggle({
+    Name = "Always Auto",
+    CurrentValue = false,
+    Flag = "AlwaysAutoToggle",
+    Callback = function(state)
+        for _, v in pairs(game.ReplicatedStorage.Weapons:GetDescendants()) do
+            if v.Name == "Auto" or v.Name == "AutoFire" or v.Name == "Automatic" or v.Name == "AutoShoot" or v.Name == "AutoGun" then
+                if state then
+                    v.Value = true
+                else
+                    v.Value = false
+                end
+            end
+        end
+    end,
+})
+
+local NoSpreadToggle = WeaponMods:CreateToggle({
+    Name = "No Spread",
+    CurrentValue = false,
+    Flag = "NoSpreadToggle",
+    Callback = function(state)
+        for _, v in pairs(game:GetService("ReplicatedStorage").Weapons:GetDescendants()) do
+            if v.Name == "MaxSpread" or v.Name == "Spread" or v.Name == "SpreadControl" then
+                if state then
+                    v.Value = 0
+                else
+                    v.Value = 1
+                end
+            end
+        end
+    end,
+})
+
+local NoRecoilToggle = WeaponMods:CreateToggle({
+    Name = "No Recoil",
+    CurrentValue = false,
+    Flag = "NoRecoilToggle",
+    Callback = function(state)
+        for _, v in pairs(game:GetService("ReplicatedStorage").Weapons:GetDescendants()) do
+            if v.Name == "RecoilControl" or v.Name == "Recoil" then
+                if state then
+                    v.Value = 0
+                else
+                    v.Value = 1
+                end
+            end
+        end
+    end,
+})
+
+local FastReloadToggle = WeaponMods:CreateToggle({
+    Name = "Fast Reload",
+    CurrentValue = false,
+    Flag = "FastReloadToggle",
+    Callback = function(state)
+        for _, v in pairs(game.ReplicatedStorage.Weapons:GetChildren()) do
+            if v:FindFirstChild("ReloadTime") then
+                if state then
+                    v.ReloadTime.Value = 0.01
+                else
+                    v.ReloadTime.Value = 0.8
+                end
+            end
+            if v:FindFirstChild("EReloadTime") then
+                if state then
+                    v.EReloadTime.Value = 0.01
+                else
+                    v.EReloadTime.Value = 0.8
+                end
+            end
+        end
+    end,
+})
+
+local AmmoModsSection = WeaponMods:CreateSection("Ammo Modifications", true)
+
+local InfiniteAmmoToggle = WeaponMods:CreateToggle({
+    Name = "Infinite Ammo",
+    CurrentValue = false,
+    Flag = "InfiniteAmmoToggle",
+    Callback = function(enabled)
+        if enabled then
+            _G.infiniteAmmo = true
+            spawn(function()
+                while _G.infiniteAmmo do
+                    if player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("GUI") and player.PlayerGui.GUI:FindFirstChild("Client") and player.PlayerGui.GUI.Client:FindFirstChild("Variables") then
+                        local variables = player.PlayerGui.GUI.Client.Variables
+                        if variables:FindFirstChild("ammocount") then
+                            variables.ammocount.Value = 999
+                        end
+                        if variables:FindFirstChild("ammocount2") then
+                            variables.ammocount2.Value = 999
+                        end
+                    end
+                    wait(1)
+                end
+            end)
+        else
+            _G.infiniteAmmo = false
+            if player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("GUI") and player.PlayerGui.GUI:FindFirstChild("Client") and player.PlayerGui.GUI.Client:FindFirstChild("Variables") then
+                local variables = player.PlayerGui.GUI.Client.Variables
+                if variables:FindFirstChild("ammocount") then
+                    variables.ammocount.Value = 0
+                end
+                if variables:FindFirstChild("ammocount2") then
+                    variables.ammocount2.Value = 0
+                end
+            end
+        end
+    end,
+})
